@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import { Data } from './data.js';
 
@@ -8,12 +7,11 @@ const app = express();
 dotenv.config()
 
 app.use(cors({
-    origin: ['http://localhost:3000'],
+    origin: ['*', 'http://localhost:3000'],
     credentials: true,
     maxAge: 7200,
     methods: "GET,POST"
 }));
-app.use(cookieParser());
 app.use(express.json());
 
 app.get("/health", async (_, res) => {
@@ -29,11 +27,13 @@ app.get("/harvest", async (_, res) => {
     const jsonData = JSON.stringify(dataStore);
     res.send(jsonData);
 })
+app.use(express.json())
 
 app.post("/reception", async (req, res) => {
     // Arduino endpoint
-    console.log(req.body);
-    dataStore.push(new Data(req.body))
+    console.log(req);
+    console.log(req.body)
+    dataStore.push(new Data(req.body, new Date()))
     res.send()
 })
 
